@@ -1,5 +1,6 @@
 #import sqlalchemy as db
 from app.db import db
+from sqlalchemy import inspect
 
 
 class BaseMixin(db.Model):
@@ -7,6 +8,10 @@ class BaseMixin(db.Model):
 
     def __int__(self, **kwargs):
         self.__dict__.update(kwargs)
+
+    def to_dict(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}
 
 class Employee(BaseMixin):
     __tablename__ = 'employees'
